@@ -1,4 +1,5 @@
 import { PrismaClient } from "@/generated/prisma";
+import { formatCurrency } from './utils'; // Assurez-vous que cette fonction est importée
 
 const prisma = new PrismaClient();
 
@@ -29,8 +30,11 @@ export async function fetchLatestInvoices() {
     });
 
     return data.map((invoice) => ({
-      ...invoice,
-      amount: invoice.amount / 100, // Convert cents to dollars
+      id: invoice.id,
+      name: invoice.customers?.name || '',
+      image_url: invoice.customers?.image_url || '',
+      email: invoice.customers?.email || '',
+      amount: formatCurrency(invoice.amount), // Utilisation de formatCurrency
     }));
   } catch (error) {
     console.error('Database Error:', error);
